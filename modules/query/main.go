@@ -54,7 +54,7 @@ func main() {
 		//lambdaSetup
 		database.Init()
 		conf.ReadConf()
-		go ginHttp.StartWeb()
+		ginHttp.ConfigWeb()
 	}
 
 	if gconf.Http.Enabled {

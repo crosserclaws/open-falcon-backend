@@ -1,11 +1,11 @@
 package ginHttp
 
 import (
+	"net/http"
 	"time"
 
 	cmodel "github.com/Cepave/open-falcon-backend/common/model"
 
-	"github.com/Cepave/open-falcon-backend/modules/query/g"
 	"github.com/Cepave/open-falcon-backend/modules/query/gin_http/computeFunc"
 	grahttp "github.com/Cepave/open-falcon-backend/modules/query/gin_http/grafana"
 	"github.com/Cepave/open-falcon-backend/modules/query/gin_http/openFalcon"
@@ -49,23 +49,28 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func StartWeb() {
-	handler := gin.Default()
-	handler.Use(CORSMiddleware())
-	conf := g.Config()
+func ConfigWeb() {
 
-	compute := handler.Group("/func")
+	computeHandler := gin.Default()
+	computeHandler.Use(CORSMiddleware())
+	compute := computeHandler.Group("/func")
 	compute.GET("/compute", computeFunc.Compute)
 	compute.GET("/funcations", computeFunc.GetAvaibleFun)
 	compute.GET("/smapledata", computeFunc.GetTestData)
+	http.Handle("/func", computeHandler)
 
-	openfalcon := handler.Group("/owl")
+	openfalconHandler := gin.Default()
+	openfalconHandler.Use(CORSMiddleware())
+	openfalcon := openfalconHandler.Group("/owl")
 	openfalcon.GET("/endpoints", openFalcon.GetEndpoints)
 	openfalcon.GET("/queryrrd", openFalcon.QueryData)
+	http.Handle("/owl", openfalconHandler)
 
-	grafana := handler.Group("/api/grafana")
+	grafanaHandler := gin.Default()
+	grafanaHandler.Use(CORSMiddleware())
+	grafana := grafanaHandler.Group("/api/grafana")
 	grafana.GET("/", grahttp.GrafanaMain)
 	grafana.GET("/metrics/find", grahttp.GrafanaMain)
 	grafana.POST("/render", grahttp.GetQueryTargets)
-	handler.Run(conf.GinHttp.Listen)
+	http.Handle("/api/grafana", grafanaHandler)
 }
