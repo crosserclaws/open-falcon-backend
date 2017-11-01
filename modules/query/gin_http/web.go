@@ -57,14 +57,14 @@ func ConfigWeb() {
 	compute.GET("/compute", computeFunc.Compute)
 	compute.GET("/funcations", computeFunc.GetAvaibleFun)
 	compute.GET("/smapledata", computeFunc.GetTestData)
-	http.Handle("/func", computeHandler)
+	http.Handle("/func/", computeHandler)
 
 	openfalconHandler := gin.Default()
 	openfalconHandler.Use(CORSMiddleware())
 	openfalcon := openfalconHandler.Group("/owl")
 	openfalcon.GET("/endpoints", openFalcon.GetEndpoints)
 	openfalcon.GET("/queryrrd", openFalcon.QueryData)
-	http.Handle("/owl", openfalconHandler)
+	http.Handle("/owl/", openfalconHandler)
 
 	grafanaHandler := gin.Default()
 	grafanaHandler.Use(CORSMiddleware())
@@ -72,5 +72,5 @@ func ConfigWeb() {
 	grafana.GET("/", grahttp.GrafanaMain)
 	grafana.GET("/metrics/find", grahttp.GrafanaMain)
 	grafana.POST("/render", grahttp.GetQueryTargets)
-	http.Handle("/api/grafana", grafanaHandler)
+	http.Handle("/api/grafana/", grafanaHandler)
 }
