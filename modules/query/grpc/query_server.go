@@ -110,7 +110,7 @@ func Start() {
 	}()
 
 	port := fmt.Sprintf(":%v", g.Config().Grpc.Port)
-	log.Info("start grpc in port %v ..", port)
+	log.Infof("start grpc in port %v ..", port)
 	//queryrrd(1452806153, 1452827753, "AVERAGE", "docker-agent", "cpu.idle")
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
